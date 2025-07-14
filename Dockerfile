@@ -1,9 +1,11 @@
 FROM iwhicr.azurecr.io/webmethods-edge-runtime:11.2.0 AS builder
 
 ARG WPM_TOKEN
+ARG GIT_TOKEN
 
 RUN /opt/softwareag/wpm/bin/wpm.sh install -ws https://packages.webmethods.io -wr licensed -j $WPM_TOKEN -d /opt/softwareag/IntegrationServer WmJDBCAdapter:latest
 RUN curl -o /opt/softwareag/IntegrationServer/packages/WmJDBCAdapter/code/jars/postgresql-42.7.4.jar "https://jdbc.postgresql.org/download/postgresql-42.7.4.jar"
+RUN /opt/softwareag/wpm/bin/wpm.sh install -u staillanibm -p $GIT_TOKEN -r https://github.com/staillanibm -d /opt/softwareag/IntegrationServer sttFramework
 
 ADD --chown=1724 . /opt/softwareag/IntegrationServer/packages/sttContactManagement
 
