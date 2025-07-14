@@ -1,0 +1,203 @@
+# -- Number of replicates in Deployment
+replicaCount: 2
+
+statefulSet: false
+
+image:
+  repository: "default-route-openshift-image-registry.apps.678663c1feba7dc9c41f356d.ocp.techzone.ibm.com/demo2025/msr-contact-management"
+  pullPolicy: Always
+  tag:        "1.0.31"
+
+imagePullSecrets: 
+ - name: cr-regcred
+
+nameOverride: ""
+fullnameOverride: "stt-contact-management"
+
+containerName: msr-contact-management
+
+extraEnvs: 
+- name: SERVER
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.name
+- name: SW_AGENT_COLLECTOR_ESTABLISH_CLOUD_COMMUNICATION
+  value: 'false'
+- name: SW_AGENT_EXTERNAL_ESTABLISH_COMMUNICATION
+  value: 'true'
+- name: SW_AGENT_OTEL_ENDPOINT
+  value: http://simple-collector:4318/v1/traces
+- name: SW_AGENT_OTEL_HEADERS
+  value: 'Content-Type#application/x-protobuf'
+- name: SW_AGENT_EXTERNAL_SUPPORT_LONG_ID
+  value: 'false'
+- name: SW_AGENT_EXTERNAL_API_ERROR_CODES
+  value: '502,503,504'
+- name: SW_AGENT_OTEL_RESOURCE_ATTRIBUTES
+  value: 'service.name#contact-management, service.namespace#demo2025'
+- name: SW_AGENT_TRACE_TRANSFER_INTERVAL
+  value: '1000'
+- name: JMX_ENABLED
+  value: true
+
+
+secretMounts:
+  - name: msr-secrets
+    secretName: msr-secrets
+    path: /etc/secrets
+  - name: sttlab-keystore
+    secretName: sttlab-keystore
+    path: /opt/softwareag/common/conf/keys
+
+secretVolumes:
+  - name: msr-secrets
+    secretName: msr-secrets
+  - name: sttlab-keystore
+    secretName: sttlab-keystore
+
+startupProbe: 
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 20
+  failureThreshold: 32
+  periodSeconds: 5            
+
+livenessProbe: 
+  httpGet:
+    path: /health/liveness
+    port: http
+  initialDelaySeconds: 0
+  periodSeconds: 15
+  timeoutSeconds: 2
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe: 
+  httpGet:
+    path: /health/readiness
+    port: http
+  initialDelaySeconds: 0
+  periodSeconds: 15
+  timeoutSeconds: 2
+  successThreshold: 1
+  failureThreshold: 3
+
+microservicesruntime:
+  httpsPort:                5543
+  httpsPortScheme:          "HTTPS"
+  httpPort:                 5555
+  httpPortScheme:          "HTTP"
+  diagnosticPort:           9999
+
+  licenseKeyProvided: false
+
+  memoryHeap:
+    min:                    "512M"
+    max:                    "1024M"
+
+  installDir:      /opt/softwareag/IntegrationServer 
+
+  propertiesFile: 
+    content: |
+      artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionEnabled=true
+      artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.serverName=pg-sttlab-sttlab-2025.i.aivencloud.com
+      artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.portNumber=23375
+      artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.databaseName=defaultdb
+      artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.user=$secret{DB_USERNAME}
+      artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.password=$secret{DB_PASSWORD}
+      artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.otherProperties=sslmode\=require
+
+      jndi.DEFAULT_IS_JNDI_PROVIDER.providerURL=nsp://umserver-0:9000
+      jms.DEFAULT_IS_JMS_CONNECTION.clientID=DEFAULT_IS_JMS_CLIENT
+      jms.DEFAULT_IS_JMS_CONNECTION.enabled=true
+      jms.DEFAULT_IS_JMS_CONNECTION.csqSize=0
+      jms.DEFAULT_IS_JMS_CONNECTION.jndi_jndiAliasName=DEFAULT_IS_JNDI_PROVIDER
+      jms.DEFAULT_IS_JMS_CONNECTION.jndi_automaticallyCreateUMAdminObjects=true
+      jms.DEFAULT_IS_JMS_CONNECTION.producerMaxRetryAttempts=30
+      jms.DEFAULT_IS_JMS_CONNECTION.producerRetryInterval=1000
+
+      keystore.STTLAB.keyAlias.sttlab.eu.keyAliasPassword=$secret{KEY_PASSWORD}
+      keystore.STTLAB.ksDescription=sttlab.eu keystore
+      keystore.STTLAB.ksIsHsm=false
+      keystore.STTLAB.ksLocation=../common/conf/keys/sttlab.eu.jks
+      keystore.STTLAB.ksPassword=$secret{KEY_PASSWORD}
+      keystore.STTLAB.ksStoreProviderName=SUN
+      keystore.STTLAB.ksType=JKS
+
+      settings.watt.net.default.accept=application/json
+      settings.watt.server.ns.lockingMode=none
+      settings.watt.server.pipeline.processor=false
+      settings.watt.net.localhost={{ include "common.names.fullname" . }}
+      settings.watt.server.scheduler.logical.hostname={{ include "common.names.fullname" . }}
+      settings.watt.server.saveConfigFiles=false 
+      settings.watt.server.audit.logFilesToKeep=1
+      settings.watt.server.serverlogFilesToKeep=1
+      settings.watt.server.stats.logFilesToKeep=1
+
+      statisticsdatacollector.monitorConfig.enabled=false
+
+      user.Administrator.password=$secret{ADMIN_PASSWORD}
+
+      settings.watt.server.audit.service.include=qdtContactManagement.*
+      settings.watt.server.audit.service.exclude=wm.,com.,pub.
+
+
+extraPorts:
+- containerPort: 8443
+  name: https-svc
+  protocol: TCP
+
+serviceAccount:
+  create: true
+  name: "msr-contact-management"
+
+podSecurityContext: {}
+#  fsGroup: 0
+
+securityContext: 
+  capabilities:
+    drop:
+    - ALL
+  runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 5555
+
+ingress:
+  enabled: false
+
+resources:
+  msrContainer:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# -- Define values for Prometheus Operator to scrap metrics via annotation or ServiceMonitor.
+prometheus:
+  path:          "/metrics"
+  port:          "5555"
+  scheme:        "http"
+  ## -- Only used on annotation 
+  scrape:        "true"
+  ## -- Only used on ServiceMonitor
+  interval:      10s
+  ## -- Only used on ServiceMonitor
+  scrapeTimeout: 10s
+
+serviceMonitor:
+  enabled: true
+
+metering:
+  enabled: false

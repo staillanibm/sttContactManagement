@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: umserver
+  labels:
+    app: umserver
+spec:
+  serviceName: umserver-h
+  selector:
+    matchLabels:
+      name: umserver-pod
+      app: umserver
+  replicas: 1
+  template:
+    metadata:
+      name: umserver-pod
+      labels:
+        name: umserver-pod
+        app: umserver
+      annotations:
+        prometheus.io/scrape: "true"
+    spec:
+      securityContext:
+        fsGroup: 1724
+      containers:
+      - name: umserver-container
+        image: sagcr.azurecr.io/universalmessaging-server:10.15
+        volumeMounts:
+        - mountPath: /opt/softwareag/UniversalMessaging/server/umserver/licence
+          name: licenses
+        - mountPath: /opt/softwareag/UniversalMessaging/server/umserver/data
+          name: um-data-directory
+        - mountPath: /opt/softwareag/common/conf
+          name: um-conf-directory
+        ports:
+        - containerPort: 9000
+          name: nsp
+        - containerPort: 9200
+          name: metrics          
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1000Mi
+          requests:
+            cpu: 250m
+            memory: 250Mi
+        env:
+        - name: REALM_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: INIT_JAVA_MEM_SIZE
+          value: '512'
+        - name: MAX_JAVA_MEM_SIZE
+          value: '900'
+        livenessProbe:
+          httpGet:
+            port: 9000
+            path: /health/
+          failureThreshold: 2
+          initialDelaySeconds: 60
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            port: 9000
+            path: /health/
+          initialDelaySeconds: 10
+          periodSeconds: 1
+          failureThreshold: 50
+      imagePullSecrets:
+      - name: sagregcred
+      volumes:
+      - name: licenses
+        secret:
+          secretName: licenses
+          items:
+          - key: um-license
+            path: licence.xml
+  volumeClaimTemplates:
+    - metadata:
+        name: um-data-directory
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: managed-csi-premium
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: um-conf-directory
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: managed-csi-premium
+        resources:
+          requests:
+            storage: 1Gi

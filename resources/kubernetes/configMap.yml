@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contact-management 
+data:
+  application.properties: |
+    artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionEnabled=true
+    artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.serverName=sttpostgres.postgres.database.azure.com
+    artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.portNumber=5432
+    artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.databaseName=sandbox
+    artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.user=$secret{POSTGRES_USERNAME}
+    artConnection.qdtContactManagement.qdtContactManagement.jdbc.qdtContactManagement_jdbc.connectionSettings.password=$secret{POSTGRES_PASSWORD}
+
+    jndi.DEFAULT_IS_JNDI_PROVIDER.providerURL=nsp://umserver-0:9000
+    jms.DEFAULT_IS_JMS_CONNECTION.clientID=DEFAULT_IS_JMS_CLIENT
+    jms.DEFAULT_IS_JMS_CONNECTION.enabled=true
+    jms.DEFAULT_IS_JMS_CONNECTION.csqSize=0
+    jms.DEFAULT_IS_JMS_CONNECTION.jndi_jndiAliasName=DEFAULT_IS_JNDI_PROVIDER
+    jms.DEFAULT_IS_JMS_CONNECTION.jndi_automaticallyCreateUMAdminObjects=true
+    jms.DEFAULT_IS_JMS_CONNECTION.producerMaxRetryAttempts=30
+    jms.DEFAULT_IS_JMS_CONNECTION.producerRetryInterval=1000
+
+    settings.watt.net.default.accept=application/json
+    settings.watt.server.ns.lockingMode=none
+
+    globalvariable.SERVER.value=$env{SERVER}
+
+    user.Administrator.password=$secret{MSR_ADMIN_PASSWORD}
+

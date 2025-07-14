@@ -1,0 +1,1 @@
+docker login $WHI_CR_SERVER -u $WHI_CR_USERNAME -p $WHI_CR_PASSWORD

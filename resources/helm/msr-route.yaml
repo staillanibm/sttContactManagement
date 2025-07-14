@@ -1,0 +1,19 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: contacts-app
+  labels:
+    app.kubernetes.io/instance: contact-management
+    app.kubernetes.io/name: microservicesruntime
+    app.kubernetes.io/version: '10.15'
+spec:
+  host: contacts.sttlab.eu
+  to:
+    kind: Service
+    name: stt-contact-management-app
+    weight: 100
+  port:
+    targetPort: https-svc
+  tls:
+    termination: passthrough
+  wildcardPolicy: None
