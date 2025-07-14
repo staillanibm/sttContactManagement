@@ -1,0 +1,1677 @@
+{
+	"info": {
+		"_postman_id": "fe90d7a4-053b-4eb6-9bc8-12c3e442e114",
+		"name": "STT Contact Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32883895"
+	},
+	"item": [
+		{
+			"name": "Functional tests",
+			"item": [
+				{
+					"name": "Create contact",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let requestObject = {",
+									"  \"salutation\": \"Mr\",",
+									"  \"firstName\": \"John\",",
+									"  \"middleName\": \"Robert\",",
+									"  \"lastName\": \"Doe\",",
+									"  \"birthDate\": \"1997-12-15\",",
+									"  \"email\": \"john.doe@example.com\",",
+									"  \"phoneNumber\": \"123-456-7890\"",
+									"};",
+									"",
+									"Object.keys(requestObject).forEach((key) => {",
+									"  pm.collectionVariables.set(key, requestObject[key]);",
+									"});",
+									"",
+									"const currentDateTime = new Date().toISOString();",
+									"pm.collectionVariables.set(\"startDateTime\", currentDateTime);",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"function checkNullOrEmpty(variableValue, responseValue) {",
+									"    if (responseValue === undefined || responseValue === null) {",
+									"        return (variableValue === \"\" || variableValue === null);",
+									"    } else {",
+									"        return variableValue === responseValue;",
+									"    }",
+									"}",
+									"",
+									"pm.test(\"Salutation matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"salutation\"), responseJson.salutation)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"First name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"firstName\"), responseJson.firstName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Middle name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"middleName\"), responseJson.middleName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Last name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"lastName\"), responseJson.lastName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Birth date matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"birthDate\"), responseJson.birthDate)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Email matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"email\"), responseJson.email)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Phone number matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"phoneNumber\"), responseJson.phoneNumber)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Contact id is a valid UUID\", function () {",
+									"    pm.expect(responseJson.id).to.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[4][0-9a-fA-F]{3}-[89ABab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/);",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"contactId\", responseJson.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"salutation\": \"{{salutation}}\",\n  \"firstName\": \"{{firstName}}\",\n  \"middleName\": \"{{middleName}}\",\n  \"lastName\": \"{{lastName}}\",\n  \"birthDate\": \"{{birthDate}}\",\n  \"email\": \"{{email}}\",\n  \"phoneNumber\": \"{{phoneNumber}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/contacts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get contact",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"function checkNullOrEmpty(variableValue, responseValue) {",
+									"    if (responseValue === undefined || responseValue === null) {",
+									"        return (variableValue === \"\" || variableValue === null);",
+									"    } else {",
+									"        return variableValue === responseValue;",
+									"    }",
+									"}",
+									"",
+									"pm.test(\"id matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"contactId\"), responseJson.id)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Salutation matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"salutation\"), responseJson.salutation)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"First name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"firstName\"), responseJson.firstName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Middle name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"middleName\"), responseJson.middleName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Last name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"lastName\"), responseJson.lastName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Birth date matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"birthDate\"), responseJson.birthDate)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Email matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"email\"), responseJson.email)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Phone number matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"phoneNumber\"), responseJson.phoneNumber)).to.be.true;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/contacts/:contactId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts",
+								":contactId"
+							],
+							"variable": [
+								{
+									"key": "contactId",
+									"value": "{{contactId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List contacts",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const targetContact = responseJson.contacts.find(contact => contact.id === pm.collectionVariables.get(\"contactId\"));",
+									"",
+									"function checkNullOrEmpty(variableValue, responseValue) {",
+									"    if (responseValue === undefined || responseValue === null) {",
+									"        return (variableValue === \"\" || variableValue === null);",
+									"    } else {",
+									"        return variableValue === responseValue;",
+									"    }",
+									"}",
+									"",
+									"console.log(responseJson);",
+									"console.log(\"startDateTime=\" + pm.collectionVariables.get(\"startDateTime\"));",
+									"",
+									"pm.test(\"One contact found\", function () {",
+									"    pm.expect(responseJson.itemCount).to.eql(1);",
+									"});",
+									"",
+									"pm.test(\"id matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"contactId\"), targetContact.id)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Salutation matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"salutation\"), targetContact.salutation)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"First name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"firstName\"), targetContact.firstName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Middle name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"middleName\"), targetContact.middleName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Last name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"lastName\"), targetContact.lastName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Birth date matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"birthDate\"), targetContact.birthDate)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Email matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"email\"), targetContact.email)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Phone number matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"phoneNumber\"), targetContact.phoneNumber)).to.be.true;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/contacts?firstName={{firstName}}&lastName={{lastName}}&lastUpdateAfter={{startDateTime}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "{{firstName}}"
+								},
+								{
+									"key": "lastName",
+									"value": "{{lastName}}"
+								},
+								{
+									"key": "lastUpdateAfter",
+									"value": "{{startDateTime}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update contact",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let UpdateRequestObject = {",
+									"  \"salutation\": \"Dr\",",
+									"  \"firstName\": \"Jonathan\",",
+									"  \"middleName\": \"Albert\",",
+									"  \"lastName\": \"Donovan\",",
+									"  \"birthDate\": \"1997-12-16\",",
+									"  \"email\": \"j.donovan@example.com\",",
+									"  \"phoneNumber\": \"123-456-7899\"",
+									"};",
+									"",
+									"Object.keys(UpdateRequestObject).forEach((key) => {",
+									"  pm.collectionVariables.set(key+'Updated', UpdateRequestObject[key]);",
+									"});",
+									"",
+									"const currentDateTime = new Date().toISOString();",
+									"pm.collectionVariables.set(\"startDateTime\", currentDateTime);",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"function checkNullOrEmpty(variableValue, responseValue) {",
+									"    if (responseValue === undefined || responseValue === null) {",
+									"        return (variableValue === \"\" || variableValue === null);",
+									"    } else {",
+									"        return variableValue === responseValue;",
+									"    }",
+									"}",
+									"",
+									"pm.test(\"id matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"contactId\"), responseJson.id)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Salutation matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"salutationUpdated\"), responseJson.salutation)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"First name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"firstNameUpdated\"), responseJson.firstName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Middle name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"middleNameUpdated\"), responseJson.middleName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Last name matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"lastNameUpdated\"), responseJson.lastName)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Birth date matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"birthDateUpdated\"), responseJson.birthDate)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Email matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"emailUpdated\"), responseJson.email)).to.be.true;",
+									"});",
+									"",
+									"pm.test(\"Phone number matches\", function () {",
+									"    pm.expect(checkNullOrEmpty(pm.collectionVariables.get(\"phoneNumberUpdated\"), responseJson.phoneNumber)).to.be.true;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"{{contactId}}\",\n    \"salutation\": \"{{salutationUpdated}}\",\n    \"firstName\": \"{{firstNameUpdated}}\",\n    \"middleName\": \"{{middleNameUpdated}}\",\n    \"lastName\": \"{{lastNameUpdated}}\",\n    \"birthDate\": \"{{birthDateUpdated}}\",\n    \"email\": \"{{emailUpdated}}\",\n    \"phoneNumber\": \"{{phoneNumberUpdated}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/contacts/:contactId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts",
+								":contactId"
+							],
+							"variable": [
+								{
+									"key": "contactId",
+									"value": "{{contactId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete contact",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/contacts/:contactId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts",
+								":contactId"
+							],
+							"variable": [
+								{
+									"key": "contactId",
+									"value": "{{contactId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete contact (already deleted)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-test-response-status",
+								"value": "404",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/contacts/:contactId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts",
+								":contactId"
+							],
+							"variable": [
+								{
+									"key": "contactId",
+									"value": "{{contactId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get contact (not found)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-test-response-status",
+								"value": "404",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/contacts/:contactId",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts",
+								":contactId"
+							],
+							"variable": [
+								{
+									"key": "contactId",
+									"value": "{{contactId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Errors",
+			"item": [
+				{
+					"name": "createContact",
+					"item": [
+						{
+							"name": "Missing lastName",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"salutation\": \"Mr\",\n    \"firstName\": \"John\",\n    \"middleName\": \"Robert\",\n    \"birthDate\": \"1997-12-15\",\n    \"email\": \"john.doe@example.com\",\n    \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Empty lastName",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"salutation\": \"Mr\",\n    \"lastName\": \"\",\n    \"firstName\": \"John\",\n    \"middleName\": \"Robert\",\n    \"birthDate\": \"1997-12-15\",\n    \"email\": \"john.doe@example.com\",\n    \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Missing firstName",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"salutation\": \"Mr\",\n    \"lastName\": \"Doe\",\n    \"middleName\": \"Robert\",\n    \"birthDate\": \"1997-12-15\",\n    \"email\": \"john.doe@example.com\",\n    \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Empty firstName",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"salutation\": \"Mr\",\n    \"lastName\": \"Doe\",\n    \"firstName\": \"\",\n    \"middleName\": \"Robert\",\n    \"birthDate\": \"1997-12-15\",\n    \"email\": \"john.doe@example.com\",\n    \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid salutation",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"salutation\": \"abcd\",\n    \"lastName\": \"Doe\",\n    \"firstName\": \"John\",\n    \"middleName\": \"Robert\",\n    \"birthDate\": \"1997-12-15\",\n    \"email\": \"john.doe@example.com\",\n    \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid birthDate",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"salutation\": \"Mr\",\n    \"lastName\": \"\",\n    \"firstName\": \"John\",\n    \"middleName\": \"Robert\",\n    \"birthDate\": \"1997/12/15\",\n    \"email\": \"john.doe@example.com\",\n    \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Missing email",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"salutation\": \"Mr\",\n    \"lastName\": \"Doe\",\n    \"firstName\": \"John\",\n    \"middleName\": \"Robert\",\n    \"birthDate\": \"1997-12-15\",\n    \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getContact",
+					"item": [
+						{
+							"name": "Not found",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/contacts/:contactId",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts",
+										":contactId"
+									],
+									"variable": [
+										{
+											"key": "contactId",
+											"value": "b8b13648-ac2a-4c5b-b1f4-06d476e2e6a2"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "listContacts",
+					"item": [
+						{
+							"name": "Invalid limit",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/contacts?limit=-1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "-1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid limit 2",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/contacts?limit=10000",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10000"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid offset",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/contacts?offset=-10",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "-10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid sortBy",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/contacts?sortBy=abcd",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "sortBy",
+											"value": "abcd"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid sortOrder",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/contacts?sortOrder=abcd",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts"
+									],
+									"query": [
+										{
+											"key": "sortOrder",
+											"value": "abcd"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "updateContact",
+					"item": [
+						{
+							"name": "Invalid salutation",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": \"cc01d7c2-aa54-4504-8b98-28bd730d51d8\",\n  \"salutation\": \"abcd\",\n  \"firstName\": \"John\",\n  \"middleName\": \"Robert\",\n  \"lastName\": \"Doe\",\n  \"birthDate\": \"1997-12-15\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts/:contactId",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts",
+										":contactId"
+									],
+									"variable": [
+										{
+											"key": "contactId",
+											"value": "{{contactId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Missing firstName",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": \"cc01d7c2-aa54-4504-8b98-28bd730d51d8\",\n  \"salutation\": \"Mr\",\n  \"middleName\": \"Robert\",\n  \"lastName\": \"Doe\",\n  \"birthDate\": \"1997-12-15\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts/:contactId",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts",
+										":contactId"
+									],
+									"variable": [
+										{
+											"key": "contactId",
+											"value": "{{contactId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Missing lastName",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": \"cc01d7c2-aa54-4504-8b98-28bd730d51d8\",\n  \"salutation\": \"Mr\",\n  \"firstName\": \"John\",\n  \"middleName\": \"Robert\",\n  \"birthDate\": \"1997-12-15\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts/:contactId",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts",
+										":contactId"
+									],
+									"variable": [
+										{
+											"key": "contactId",
+											"value": "{{contactId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Invalid birthDate",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": \"cc01d7c2-aa54-4504-8b98-28bd730d51d8\",\n  \"salutation\": \"Mr\",\n  \"firstName\": \"John\",\n  \"middleName\": \"Robert\",\n  \"lastName\": \"Doe\",\n  \"birthDate\": \"1997-12-40\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts/:contactId",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts",
+										":contactId"
+									],
+									"variable": [
+										{
+											"key": "contactId",
+											"value": "{{contactId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Missing email",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": \"cc01d7c2-aa54-4504-8b98-28bd730d51d8\",\n  \"salutation\": \"Mr\",\n  \"firstName\": \"John\",\n  \"middleName\": \"Robert\",\n  \"lastName\": \"Doe\",\n  \"birthDate\": \"1997-12-15\",\n  \"phoneNumber\": \"123-456-7890\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/contacts/:contactId",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts",
+										":contactId"
+									],
+									"variable": [
+										{
+											"key": "contactId",
+											"value": "{{contactId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "deleteContact",
+					"item": [
+						{
+							"name": "Not found",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/contacts/:contactId",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"contacts",
+										":contactId"
+									],
+									"variable": [
+										{
+											"key": "contactId",
+											"value": "ae226544-6d55-4827-923b-91667bebfc60s"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{userName}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.request.headers.upsert({key: 'Accept', value: 'application/json'});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "salutation",
+			"value": ""
+		},
+		{
+			"key": "firstName",
+			"value": ""
+		},
+		{
+			"key": "middleName",
+			"value": ""
+		},
+		{
+			"key": "lastName",
+			"value": ""
+		},
+		{
+			"key": "birthDate",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "phoneNumber",
+			"value": ""
+		},
+		{
+			"key": "contactId",
+			"value": ""
+		},
+		{
+			"key": "startDateTime",
+			"value": ""
+		},
+		{
+			"key": "salutationUpdated",
+			"value": ""
+		},
+		{
+			"key": "firstNameUpdated",
+			"value": ""
+		},
+		{
+			"key": "middleNameUpdated",
+			"value": ""
+		},
+		{
+			"key": "lastNameUpdated",
+			"value": ""
+		},
+		{
+			"key": "birthDateUpdated",
+			"value": ""
+		},
+		{
+			"key": "emailUpdated",
+			"value": ""
+		},
+		{
+			"key": "phoneNumberUpdated",
+			"value": ""
+		},
+		{
+			"key": "accountId",
+			"value": ""
+		},
+		{
+			"key": "contactRole",
+			"value": ""
+		},
+		{
+			"key": "contactRoleId",
+			"value": ""
+		},
+		{
+			"key": "contactIdUpdated",
+			"value": ""
+		},
+		{
+			"key": "accountIdUpdated",
+			"value": ""
+		},
+		{
+			"key": "contactRoleUpdated",
+			"value": ""
+		}
+	]
+}

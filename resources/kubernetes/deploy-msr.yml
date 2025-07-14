@@ -1,0 +1,175 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: contact-management-sa
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stt-contact-management
+data:
+  application.properties: |
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionEnabled=true
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.serverName=$secret{DB_SERVER_NAME}
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.portNumber=$secret{DB_PORT}
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.databaseName=$secret{DB_DATABASE_NAME}
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.user=$secret{DB_USERNAME}
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.password=$secret{DB_PASSWORD}
+
+    jndi.DEFAULT_IS_JNDI_PROVIDER.providerURL=$secret{JNDI_URL}
+    jms.DEFAULT_IS_JMS_CONNECTION.clientID=DEFAULT_IS_JMS_CLIENT
+    jms.DEFAULT_IS_JMS_CONNECTION.enabled=true
+    jms.DEFAULT_IS_JMS_CONNECTION.csqSize=0
+    jms.DEFAULT_IS_JMS_CONNECTION.jndi_jndiAliasName=DEFAULT_IS_JNDI_PROVIDER
+    jms.DEFAULT_IS_JMS_CONNECTION.jndi_automaticallyCreateUMAdminObjects=true
+    jms.DEFAULT_IS_JMS_CONNECTION.producerMaxRetryAttempts=30
+    jms.DEFAULT_IS_JMS_CONNECTION.producerRetryInterval=1000
+    jms.DEFAULT_IS_JMS_CONNECTION.jndi_connectionFactoryLookupName=docker_k8s
+
+    settings.watt.net.default.accept=application/json
+    settings.watt.server.ns.lockingMode=none
+
+    globalvariable.SERVER.value=$env{SERVER}
+
+    user.Administrator.password=$secret{ADMIN_PASSWORD}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: stt-contact-management
+  name: stt-contact-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stt-contact-management
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: stt-contact-management
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      serviceAccountName: contact-management-sa 
+      containers:
+        - image: ghcr.io/staillanibm/msr-contact-management:latest
+          name: msr
+          volumeMounts:
+            - name: application-properties
+              mountPath: /opt/softwareag/IntegrationServer/application.properties
+              subPath:   application.properties
+              readOnly:  true
+            - name: secrets
+              mountPath: /etc/secrets
+          readinessProbe:
+            tcpSocket:
+              port: 5555
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 18
+          livenessProbe:
+            tcpSocket:
+              port: 5555
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 300m
+              memory: 500Mi
+            limits:
+              cpu: 1000m
+              memory: 2000Mi
+          env:
+            - name: SERVER
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+      volumes:
+        - name: application-properties
+          configMap:
+            name: stt-contact-management
+            items:
+            - key:  application.properties
+              path: application.properties
+        - name: secrets
+          secret:
+            secretName: stt-contact-management
+      imagePullSecrets:
+        - name: regcred
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: stt-contact-management
+  labels:
+    name: stt-contact-management
+    app: stt-contact-management
+spec:
+  selector:
+    app: stt-contact-management
+  type: ClusterIP
+  sessionAffinity: ClientIP
+  ports:
+  - port: 5555
+    targetPort: 5555
+    name: http
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: stt-contact-management
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "contact-management.sttlab.local"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: stt-contact-management
+            port: 
+              number: 5555
+  tls:
+  - hosts: 
+    - contact-management.sttlab.local
+    secretName: tls-cert
+
+---
+
+kind: HorizontalPodAutoscaler
+apiVersion: autoscaling/v2
+metadata:
+  name: stt-contact-management
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: stt-contact-management
+    apiVersion: apps/v1
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 90

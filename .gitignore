@@ -1,5 +1,5 @@
 *.bak
-*-secrets.yml
-*-secrets.yaml
+*secrets.yml
+*secrets.yaml
 .env
 .DS_Store
