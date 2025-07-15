@@ -35,6 +35,9 @@ jobs:
     - name: Build microservice Image
       run: |
         docker build -t ${{ vars.IMAGE_NAME }}:${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }} --build-arg WPM_TOKEN=${{ secrets.WPM_TOKEN }} --build-arg GIT_TOKEN=${{ secrets.GH_PATH }} .
+      env:
+        WPM_TOKEN: ${{ secrets.WPM_TOKEN }}
+        GH_PATH: ${{ secrets.GH_PATH }} 
 
     - name: Push microservice Image
       run: |
