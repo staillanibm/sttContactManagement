@@ -34,10 +34,11 @@ jobs:
 
     - name: Build microservice Image
       run: |
-        docker build -t ${{ vars.IMAGE_NAME }}:${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }} --build-arg WPM_TOKEN=${{ secrets.WPM_TOKEN }} --build-arg GIT_TOKEN=${{ secrets.GH_PATH }} .
+        echo 
+        docker build -t ${{ vars.IMAGE_NAME }}:${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }} --build-arg WPM_TOKEN=${{ secrets.WPM_TOKEN }} --build-arg GIT_TOKEN=${{ secrets.GH_PAT }} .
       env:
         WPM_TOKEN: ${{ secrets.WPM_TOKEN }}
-        GH_PATH: ${{ secrets.GH_PATH }} 
+        GH_PATH: ${{ secrets.GH_PAT }} 
 
     - name: Push microservice Image
       run: |
@@ -59,7 +60,7 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           path: sttGitOps
         env:
-          REGISTRY_URL: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ secrets.GH_PAT }}
 
       - name: Update kustomization.yaml with new tag
         run: |
