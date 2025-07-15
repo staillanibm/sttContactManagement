@@ -1,0 +1,76 @@
+name: Build and push the image
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main 
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.set_tag.outputs.image_tag }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Log in to Container Registry (for image push)
+      run: |
+        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+      env:
+        REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
+        REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }} 
+        REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }} 
+
+    - name: Log in to Container Registry (for base image pull)
+      run: |
+        echo "${{ secrets.BASE_REGISTRY_PASSWORD }}" | docker login ${{ secrets.BASE_REGISTRY_URL }} -u "${{ secrets.BASE_REGISTRY_USERNAME }}" --password-stdin
+      env:
+        REGISTRY_URL: ${{ secrets.BASE_REGISTRY_URL }}
+        REGISTRY_USERNAME: ${{ secrets.BASE_REGISTRY_USERNAME }} 
+        REGISTRY_PASSWORD: ${{ secrets.BASE_REGISTRY_PASSWORD }} 
+
+    - name: Build microservice Image
+      run: |
+        docker build -t ${{ vars.IMAGE_NAME }}:${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }} --build-arg WPM_TOKEN=${{ secrets.WPM_TOKEN }} .
+
+    - name: Push microservice Image
+      run: |
+        docker push ${{ vars.IMAGE_NAME }}:${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }}
+
+    - name: Save Tag for Later
+      id: set_tag
+      run: echo "image_tag=${{ vars.MAJOR_VERSION }}.${{ vars.MINOR_VERSION }}.${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+  update-deployment:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: Checkout Deployment Repo
+        uses: actions/checkout@v4
+        with:
+          repository: staillanibm/sttGitOps
+          token: ${{ secrets.GH_PAT }}
+          path: sttGitOps
+        env:
+          REGISTRY_URL: ${{ secrets.GH_PAT }}
+
+      - name: Update kustomization.yaml with new tag
+        run: |
+          cd sttGitOps/msr-contact-management/k8s/int
+          export IMAGE_NAME="${{ vars.IMAGE_NAME }}"
+          export IMAGE_TAG="${{ needs.build-and-push.outputs.image_tag }}"
+          yq -i '.images[] |= select(.name == strenv(IMAGE_NAME)) .newTag = strenv(IMAGE_TAG)' kustomization.yaml
+
+
+      - name: Commit and Push Changes
+        run: |
+          cd sttGitOps/msr-contact-management/k8s/int
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add kustomization.yaml
+          git commit -m "Update image tag to ${{ needs.build-and-push.outputs.image_tag }}"
+          git push origin main
