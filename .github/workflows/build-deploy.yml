@@ -62,13 +62,6 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
 
-      - name: Save expected_gen for Later
-        id: set_expected_gen
-        run: |
-          expected_gen=$(kubectl get deploy stt-contact-management -n "${{ vars.K8S_NAMESPACE }}" -o jsonpath='{.metadata.generation}')
-          echo "expected_gen=$expected_gen"
-          echo "expected_gen=$expected_gen" >> $GITHUB_OUTPUT
-
       - name: Update kustomization.yaml with new tag
         run: |
           cd sttGitOps/msr-contact-management/k8s/int
