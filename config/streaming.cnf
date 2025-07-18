@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<IDataXMLCoder version="1.0">
+  <record javaclass="com.wm.data.ISMemDataImpl">
+    <array name="StreamingConfiguration" type="record" depth="1">
+      <record javaclass="com.wm.data.ISMemDataImpl">
+        <value name="name">sttContactManagement_es</value>
+        <value name="description">Event Streams CP4I</value>
+        <value name="package">sttContactManagement</value>
+        <value name="type">Kafka</value>
+        <value name="host">${ES_BOOTSTRAP_URL}</value>
+        <value name="clientId">IS6f1088e125</value>
+        <value name="other_properties">sasl.mechanism=SCRAM-SHA-512
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="${ES_USERNAME}" password="${ES_PASSWORD}" ;</value>
+        <value name="other_runtime_properties">streaming.consumer.validate.consumers.not.greater.than.partitions=true
+sasl.mechanism=SCRAM-SHA-512
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="${ES_USERNAME}" password="${ES_PASSWORD}" ;
+streaming.client.publish.mode=asynchronous</value>
+        <value name="enabled">true</value>
+        <value name="securityProtocol">SASL_SSL</value>
+        <value name="truststoreAlias">ES_TRUSTSTORE</value>
+        <value name="keystoreAlias"></value>
+        <null name="keystoreKeyAlias"/>
+        <array name="subjects" type="record" depth="1">
+          <record javaclass="com.wm.data.ISMemDataImpl">
+            <value name="referenceId">contact_updates</value>
+            <value name="topicName">STT.CONTACTS</value>
+            <record name="keyCoder" javaclass="com.wm.data.ISMemDataImpl">
+              <value name="type">STRING</value>
+              <value name="type_display">String</value>
+              <record name="parameters" javaclass="com.wm.data.ISMemDataImpl">
+                <array name="nameValue" type="record" depth="1">
+                  <record javaclass="com.wm.data.ISMemDataImpl">
+                    <value name="name">charsetName</value>
+                    <value name="value">UTF-8</value>
+                  </record>
+                </array>
+              </record>
+              <value name="charsetName">UTF-8</value>
+            </record>
+            <record name="valueCoder" javaclass="com.wm.data.ISMemDataImpl">
+              <value name="type">JSON</value>
+              <value name="type_display">JSON</value>
+              <record name="parameters" javaclass="com.wm.data.ISMemDataImpl">
+                <array name="nameValue" type="record" depth="1">
+                  <record javaclass="com.wm.data.ISMemDataImpl">
+                    <value name="name">charsetName</value>
+                    <value name="value">UTF-8</value>
+                  </record>
+                  <record javaclass="com.wm.data.ISMemDataImpl">
+                    <value name="name">documentTypeName</value>
+                    <value name="value">sttContactManagement.docTypes.events:ContactUpdate</value>
+                  </record>
+                  <record javaclass="com.wm.data.ISMemDataImpl">
+                    <value name="name">schema</value>
+                    <null name="value"/>
+                  </record>
+                </array>
+              </record>
+              <value name="documentTypeName">sttContactManagement.docTypes.events:ContactUpdate</value>
+              <value name="charsetName">UTF-8</value>
+              <null name="schema"/>
+            </record>
+            <value name="aliasName">sttContactManagement_es</value>
+          </record>
+        </array>
+      </record>
+    </array>
+  </record>
+</IDataXMLCoder>

@@ -41,6 +41,7 @@ services:
       - "15555:5555"
     volumes:
       - ./application.properties:/opt/softwareag/IntegrationServer/application.properties
+      - ./es-cert.p12:/opt/softwareag/IntegrationServer/conf/es-cert.p12
     env_file:
       - .env
     healthcheck:

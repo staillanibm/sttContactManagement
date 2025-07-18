@@ -30,6 +30,14 @@ data:
     settings.watt.server.ns.lockingMode=none
 
     globalvariable.SERVER.value=$env{SERVER}
+    globalvariable.ES_BOOTSTRAP_URL.value=$secret{ES_BOOTSTRAP_URL}
+    globalvariable.ES_USERNAME.value=$secret{ES_USERNAME}
+    globalvariable.ES_PASSWORD.value=$secret{ES_PASSWORD}
+    globalvariable.EVENT_SYSTEM.value=KAFKA
+    globalvariable.sttContactManagement.EVENT_CONNECTION_ALIAS.value=sttContactManagement_es
+
+    truststore.ES_TRUSTSTORE.ksLocation=/es/es-cert.p12
+    truststore.ES_TRUSTSTORE.ksPassword=$secret{ES_TRUSTSTORE_PASSWORD}
 
     user.Administrator.password=$secret{ADMIN_PASSWORD}
 
@@ -69,6 +77,10 @@ spec:
               readOnly:  true
             - name: secrets
               mountPath: /etc/secrets
+            - name: es-truststore
+              mountPath: /es/es-cert.p12
+              subPath: es-cert.p12
+              readOnly: true
           readinessProbe:
             tcpSocket:
               port: 5555
@@ -105,6 +117,12 @@ spec:
         - name: secrets
           secret:
             secretName: stt-contact-management
+        - name: es-truststore
+          secret:
+            secretName: es-truststore
+            items:
+            - key:  es-cert.p12
+              path: es-cert.p12
       imagePullSecrets:
         - name: regcred
 

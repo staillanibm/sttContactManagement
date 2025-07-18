@@ -31,9 +31,17 @@ kubectl create secret generic stt-contact-management \
     --from-literal=DB_DATABASE_NAME=${DB_DATABASE_NAME} \
     --from-literal=DB_USERNAME=${DB_USERNAME} \
     --from-literal=DB_PASSWORD=${DB_PASSWORD} \
-    --from-literal=JNDI_URL=${JNDI_URL}
+    --from-literal=JNDI_URL=${JNDI_URL} \
+    --from-literal=ES_BOOTSTRAP_URL=${ES_BOOTSTRAP_URL} \
+    --from-literal=ES_USERNAME=${ES_USERNAME} \
+    --from-literal=ES_PASSWORD=${ES_PASSWORD} \
+    --from-literal=ES_TRUSTSTORE_PASSWORD=${ES_TRUSTSTORE_PASSWORD}
 
 # Create the Postgres secret
 kubectl create secret generic postgres \
     --from-literal=DB_USERNAME=${DB_USERNAME} \
     --from-literal=DB_PASSWORD=${DB_PASSWORD} 
+
+# Create the Event Streams Truststore secret
+kubectl create secret generic es-truststore \
+  --from-file=es-cert.p12=${ES_TRUSTSTORE_LOCATION}

@@ -4,3 +4,9 @@
 .env
 .DS_Store
 /bin/
+*.p12
+config/empw.dat
+config/globalVariables.cnf
+config/passman.cnf
+config/txnPassStore.dat
+config/WORK-txnPassStore.dat
