@@ -3,3 +3,4 @@
 *secrets.yaml
 .env
 .DS_Store
+/bin/

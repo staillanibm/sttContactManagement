@@ -5,7 +5,7 @@
     <value name="node_type">record</value>
     <value name="node_subtype">unknown</value>
     <value name="node_nsName">sttContactManagement.api.ContactManagementAPI_.docTypes:Error</value>
-    <value name="node_pkg">qdtContactManagement</value>
+    <value name="node_pkg">sttContactManagement</value>
     <value name="is_public">false</value>
     <value name="field_name">Error</value>
     <value name="field_type">record</value>
@@ -180,7 +180,6 @@
       </record>
     </array>
     <null name="rec_closed"/>
-    <null name="rec_sync_des"/>
     <null name="schemaRegistered"/>
     <value name="modifiable">false</value>
     <null name="schemaCompliant"/>

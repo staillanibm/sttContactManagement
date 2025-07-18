@@ -52,11 +52,11 @@
       </record>
     </array>
   </record>
-  <value name="originUri">file://C:\SAG\IntegrationServer\packages\qdtContactManagement\resources\api\ContactManagementAPI.yml</value>
+  <value name="originUri">file:///Users/stephanetailland/git/sttContactManagement/resources/api/ContactManagementAPI.yml</value>
   <value name="resourceName">Contacts</value>
   <Boolean name="modifiable">false</Boolean>
   <null name="srcdoctypename"/>
-  <value name="assocdoctypename">sttContactManagement.api.ContactManagementAPI_.resources.Contacts_.docTypes:Contacts</value>
+  <null name="assocdoctypename"/>
   <Boolean name="isjsonapi">false</Boolean>
   <array name="attributes" type="record" depth="1">
   </array>
