@@ -351,7 +351,7 @@
     <value>PUT</value>
     <value>PATCH</value>
   </array>
-  <value name="pipeline_option">3</value>
+  <value name="pipeline_option">1</value>
   <value name="originURI">file:///Users/stephanetailland/git/sttContactManagement/resources/api/ContactManagementAPI.yml</value>
   <value name="modifiable">true</value>
   <value name="is_public">false</value>
