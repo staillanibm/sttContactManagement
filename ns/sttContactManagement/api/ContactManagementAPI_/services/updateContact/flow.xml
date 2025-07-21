@@ -741,6 +741,43 @@
         <value name="field_dim">0</value>
         <value name="wrapper_type">IData</value>
         <array name="rec_fields" type="record" depth="1">
+          <record javaclass="com.wm.util.Values">
+            <value name="node_type">record</value>
+            <value name="node_subtype">unknown</value>
+            <value name="node_comment">application/json</value>
+            <value name="is_public">false</value>
+            <value name="field_name">Contact</value>
+            <value name="field_type">recref</value>
+            <value name="field_is_jsonSchema">true</value>
+            <value name="field_dim">0</value>
+            <value name="field_opt">true</value>
+            <array name="field_content_type" type="record" depth="1">
+              <record javaclass="com.wm.util.Values">
+                <record name="type" javaclass="com.wm.util.Values">
+                  <value name="key">type</value>
+                  <value name="value">object</value>
+                  <value name="type">STRING</value>
+                </record>
+                <record name="extendedProperties" javaclass="com.wm.util.Values">
+                  <record name="extensionName" javaclass="com.wm.util.Values">
+                    <value name="key">extensionName</value>
+                    <value name="value">openapi</value>
+                    <value name="type">STRING</value>
+                  </record>
+                  <record name="extensionVersion" javaclass="com.wm.util.Values">
+                    <value name="key">extensionVersion</value>
+                    <value name="value">3.0.2</value>
+                    <value name="type">STRING</value>
+                  </record>
+                </record>
+              </record>
+            </array>
+            <value name="nillable">true</value>
+            <Boolean name="readOnly">false</Boolean>
+            <Boolean name="writeOnly">false</Boolean>
+            <value name="modifiable">true</value>
+            <value name="rec_ref">sttContactManagement.api.ContactManagementAPI_.docTypes:Contact</value>
+          </record>
         </array>
         <value name="modifiable">true</value>
       </record>
@@ -848,6 +885,27 @@
 
 <MAPCOPY FROM="/params;2;0/path;2;0/contactId;1;0" TO="/requestBody;2;0/Contact;4;0;sttContactManagement.api.ContactManagementAPI_.docTypes:Contact/id;1;0">
 </MAPCOPY>
+
+<MAPINVOKE SERVICE="sttFramework.services:convertToUTC" VALIDATE-IN="$none" VALIDATE-OUT="$none" INVOKE-ORDER="0">
+
+  <!-- nodes -->
+
+<MAP MODE="INVOKEINPUT">
+
+  <!-- nodes -->
+
+<MAPCOPY FROM="/requestBody;2;0/Contact;4;0;sttContactManagement.api.ContactManagementAPI_.docTypes:Contact/birthDate;3.9;0" TO="/dateIn;3.9;0">
+</MAPCOPY>
+</MAP>
+
+<MAP MODE="INVOKEOUTPUT">
+
+  <!-- nodes -->
+
+<MAPCOPY FROM="/dateOut;3.9;0" TO="/requestBody;2;0/Contact;4;0;sttContactManagement.api.ContactManagementAPI_.docTypes:Contact/birthDate;3.9;0">
+</MAPCOPY>
+</MAP>
+</MAPINVOKE>
 </MAP>
 </SEQUENCE>
 
