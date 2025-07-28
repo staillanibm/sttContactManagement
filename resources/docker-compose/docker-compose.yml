@@ -31,7 +31,8 @@ services:
       test: ["CMD-SHELL", "curl --silent http://localhost:9000/health/ | grep -q '\"ServerStatus\":\"OK\"'"]
 
   msr-contact-management:
-    image: ghcr.io/staillanibm/msr-contact-management:latest
+    image: ${IMAGE_NAME}:${TAG}
+    container_name: msr-contact-management
     depends_on:
       - umserver
       - postgres

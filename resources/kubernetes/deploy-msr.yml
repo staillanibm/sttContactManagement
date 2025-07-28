@@ -48,6 +48,7 @@ kind: Deployment
 metadata:
   labels:
     app: stt-contact-management
+    app.kubernetes.io/name: microservicesruntime
   name: stt-contact-management
 spec:
   replicas: 1
