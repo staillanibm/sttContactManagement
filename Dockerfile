@@ -1,4 +1,5 @@
-FROM iwhicr.azurecr.io/webmethods-edge-runtime:11.2.0 AS builder
+#FROM iwhicr.azurecr.io/webmethods-edge-runtime:11.2.0 AS builder
+FROM ghcr.io/staillanibm/webmethods-edge-runtime:11.0.11 AS builder
 
 ARG WPM_TOKEN
 ARG GIT_TOKEN
@@ -21,7 +22,8 @@ USER 0
 RUN chgrp -R 0 /opt/softwareag && chmod -R g=u /opt/softwareag
 
 
-FROM iwhicr.azurecr.io/webmethods-edge-runtime:11.2.0
+#FROM iwhicr.azurecr.io/webmethods-edge-runtime:11.2.0
+FROM ghcr.io/staillanibm/webmethods-edge-runtime:11.0.11
 
 USER 1724
 
