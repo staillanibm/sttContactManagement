@@ -1962,7 +1962,7 @@
 
   <!-- nodes -->
 
-<MAP TIMEOUT="" MODE="STANDALONE" DISABLED="true">
+<MAP TIMEOUT="" MODE="STANDALONE">
   <COMMENT></COMMENT>
   <MAPTARGET>
 
@@ -2534,10 +2534,10 @@
 
   <!-- nodes -->
 
-<MAPCOPY FROM="/selectContactByIdOutput;2;0/results;2;1/id;1;0" TO="/requestBody;2;0/Contact;4;0;sttContactManagement.api.ContactManagementAPI_.docTypes:Contact/id;1;0" DISABLED="true">
+<MAPCOPY FROM="/selectContactByIdOutput;2;0/results;2;1/id;1;0" TO="/requestBody;2;0/Contact;4;0;sttContactManagement.api.ContactManagementAPI_.docTypes:Contact/id;1;0">
 </MAPCOPY>
 
-<MAPCOPY FROM="/selectContactByIdOutput;2;0/results;2;1/created_at;3.9;0" TO="/requestBody;2;0/Contact;4;0;sttContactManagement.api.ContactManagementAPI_.docTypes:Contact/creationDateTime;3.9;0" DISABLED="true">
+<MAPCOPY FROM="/selectContactByIdOutput;2;0/results;2;1/created_at;3.9;0" TO="/requestBody;2;0/Contact;4;0;sttContactManagement.api.ContactManagementAPI_.docTypes:Contact/creationDateTime;3.9;0">
 </MAPCOPY>
 </MAP>
 </SEQUENCE>
