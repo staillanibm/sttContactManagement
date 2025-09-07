@@ -69,7 +69,7 @@ spec:
         - name: regcred
       serviceAccountName: contact-management-sa 
       containers:
-        - image: ghcr.io/staillanibm/msr-contact-management:latest
+        - image: ghcr.io/staillanibm/msr-contact-management:1.1.9
           name: msr
           volumeMounts:
             - name: application-properties
