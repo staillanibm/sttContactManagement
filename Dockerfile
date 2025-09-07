@@ -16,7 +16,7 @@ RUN curl -o /opt/softwareag/IntegrationServer/packages/WmJDBCAdapter/code/jars/p
 RUN /opt/softwareag/wpm/bin/wpm.sh install -u staillanibm -p $GIT_TOKEN -r https://github.com/staillanibm -d /opt/softwareag/IntegrationServer sttFramework
 RUN /opt/softwareag/IntegrationServer/bin/jcode.sh makeall sttFramework
 
-ADD --chown=1724 . /opt/softwareag/IntegrationServer/packages/sttContactManagement
+ADD --chown=1724:0 . /opt/softwareag/IntegrationServer/packages/sttContactManagement
 
 USER 0
 RUN chgrp -R 0 /opt/softwareag && chmod -R g=u /opt/softwareag

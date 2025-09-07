@@ -36,6 +36,9 @@ docker-test:
           --env-var "password=${DOCKER_ADMIN_PASSWORD}" \
           --insecure
 
+ocp-login:
+	@oc login ${OCP_API_URL} -u ${OCP_USERNAME} -p ${OCP_PASSWORD}
+
 kube-test:
 	newman run ./resources/tests/ContactManagementAutomated.postman_collection.json \
           --env-var "url=${KUBE_ROOT_URL}/rad/sttContactManagement.api:ContactManagementAPI" \

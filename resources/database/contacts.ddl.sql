@@ -7,6 +7,7 @@ CREATE TABLE contacts (
     birth_date DATE, 
     email VARCHAR(100),
     phone_number VARCHAR(20),
+    external_id VARCHAR(20),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
