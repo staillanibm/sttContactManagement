@@ -64,6 +64,7 @@ jobs:
 
       - name: Update kustomization.yaml with new tag
         run: |
+          ls -la
           cd sttContactManagementDeploy
           export IMAGE_NAME="${{ vars.IMAGE_NAME }}"
           export IMAGE_TAG="${{ needs.build-and-push.outputs.image_tag }}"
