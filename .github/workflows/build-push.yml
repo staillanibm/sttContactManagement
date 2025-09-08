@@ -81,7 +81,7 @@ jobs:
 
   update-deployment-gitops:
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: update-deployment
 
     steps:
       - name: Checkout Deployment Repo
