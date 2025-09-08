@@ -58,13 +58,12 @@ jobs:
         with:
           repository: staillanibm/sttContactManagementDeploy
           token: ${{ secrets.GH_PAT }}
-          path: sttGitOps
+          path: sttContactManagementDeploy
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
 
       - name: Update kustomization.yaml with new tag
         run: |
-          ls -la
           cd sttContactManagementDeploy
           export IMAGE_NAME="${{ vars.IMAGE_NAME }}"
           export IMAGE_TAG="${{ needs.build-and-push.outputs.image_tag }}"
