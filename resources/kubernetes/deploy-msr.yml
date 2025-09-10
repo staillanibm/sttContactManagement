@@ -90,6 +90,10 @@ spec:
               mountPath: /es/es-cert.p12
               subPath: es-cert.p12
               readOnly: true
+            - name: eem-truststore
+              mountPath: /es/eem-cert.jks
+              subPath: eem-cert.jks
+              readOnly: true
           readinessProbe:
             tcpSocket:
               port: 5555
@@ -149,6 +153,12 @@ spec:
             items:
             - key:  es-cert.p12
               path: es-cert.p12
+        - name: eem-truststore
+          secret:
+            secretName: eem-truststore
+            items:
+            - key:  eem-cert.jks
+              path: eem-cert.jks
       imagePullSecrets:
         - name: regcred
 
