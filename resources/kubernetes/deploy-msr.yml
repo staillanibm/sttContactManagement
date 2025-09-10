@@ -33,6 +33,7 @@ data:
     globalvariable.ES_BOOTSTRAP_URL.value=$secret{ES_BOOTSTRAP_URL}
     globalvariable.ES_USERNAME.value=$secret{ES_USERNAME}
     globalvariable.ES_PASSWORD.value=$secret{ES_PASSWORD}
+    globalvariable.ES_PASSWORD.isSecure=true
     globalvariable.EVENT_SYSTEM.value=KAFKA
     globalvariable.sttContactManagement.EVENT_CONNECTION_ALIAS.value=sttContactManagement_es
 
@@ -108,6 +109,23 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: SAG_IS_CLOUD_REGISTER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: SAG_IS_CLOUD_REGISTER_URL
+                  name: stt-contact-management
+            - name: SAG_IS_EDGE_CLOUD_ALIAS
+              valueFrom:
+                secretKeyRef:
+                  key: SAG_IS_EDGE_CLOUD_ALIAS
+                  name: stt-contact-management
+            - name: SAG_IS_CLOUD_REGISTER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: SAG_IS_CLOUD_REGISTER_TOKEN
+                  name: stt-contact-management
+            - name: SAG_IS_CLOUD_ALLOW_SYNC
+              value: false
       volumes:
         - name: application-properties
           configMap:
