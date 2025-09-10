@@ -35,7 +35,11 @@ kubectl create secret generic stt-contact-management \
     --from-literal=ES_BOOTSTRAP_URL=${ES_BOOTSTRAP_URL} \
     --from-literal=ES_USERNAME=${ES_USERNAME} \
     --from-literal=ES_PASSWORD=${ES_PASSWORD} \
-    --from-literal=ES_TRUSTSTORE_PASSWORD=${ES_TRUSTSTORE_PASSWORD}
+    --from-literal=ES_TRUSTSTORE_PASSWORD=${ES_TRUSTSTORE_PASSWORD} \
+    --from-literal=EEM_BOOTSTRAP_URL=${EEM_BOOTSTRAP_URL} \
+    --from-literal=EEM_USERNAME=${EEM_USERNAME} \
+    --from-literal=EEM_PASSWORD=${EEM_PASSWORD} \
+    --from-literal=EEM_TRUSTSTORE_PASSWORD=${EEM_TRUSTSTORE_PASSWORD}
 
 # Create the Postgres secret
 kubectl create secret generic postgres \
@@ -45,3 +49,7 @@ kubectl create secret generic postgres \
 # Create the Event Streams Truststore secret
 kubectl create secret generic es-truststore \
   --from-file=es-cert.p12=${ES_TRUSTSTORE_LOCATION}
+
+# Create the Event Endpoint Management Truststore secret
+kubectl create secret generic eem-truststore \
+  --from-file=eem-cert.jks=${EEM_TRUSTSTORE_LOCATION}

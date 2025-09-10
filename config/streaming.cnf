@@ -24,7 +24,7 @@ streaming.client.publish.mode=asynchronous</value>
         <array name="subjects" type="record" depth="1">
           <record javaclass="com.wm.data.ISMemDataImpl">
             <value name="referenceId">contact_updates</value>
-            <value name="topicName">STT.CONTACTS</value>
+            <value name="topicName">CONTACTS</value>
             <record name="keyCoder" javaclass="com.wm.data.ISMemDataImpl">
               <value name="type">STRING</value>
               <value name="type_display">String</value>
@@ -70,20 +70,61 @@ streaming.client.publish.mode=asynchronous</value>
         <value name="description">sttContactManagement_eem</value>
         <value name="package">sttContactManagement</value>
         <value name="type">Kafka</value>
-        <value name="host">my-eem-gateway-ibm-egw-rt-event-automation.cp4i-253015-1ea39f2197613090e80c4981ab6eab96-0000.eu-de.containers.appdomain.cloud:443</value>
-        <value name="clientId">IS2104511716</value>
+        <value name="host">${EEM_BOOTSTRAP_URL}</value>
+        <value name="clientId">ISedf59677ea</value>
         <value name="other_properties">sasl.mechanism=PLAIN
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="eem-02ee43cf-0a5c-47ec-97d1-181226a641fc" password="[*****]" ;</value>
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="${EEM_USERNAME}" password="${EEM_PASSWORD}" ;</value>
         <value name="other_runtime_properties">streaming.consumer.validate.consumers.not.greater.than.partitions=true
 sasl.mechanism=PLAIN
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="eem-02ee43cf-0a5c-47ec-97d1-181226a641fc" password="[*****]" ;
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="${EEM_USERNAME}" password="${EEM_PASSWORD}" ;
 streaming.client.publish.mode=asynchronous</value>
-        <value name="enabled">false</value>
+        <value name="enabled">true</value>
         <value name="securityProtocol">SASL_SSL</value>
         <value name="truststoreAlias">EEM_TRUSTSTORE</value>
         <value name="keystoreAlias"></value>
         <null name="keystoreKeyAlias"/>
         <array name="subjects" type="record" depth="1">
+          <record javaclass="com.wm.data.ISMemDataImpl">
+            <value name="referenceId">contact_updates_eem</value>
+            <value name="topicName">CONTACTS</value>
+            <record name="keyCoder" javaclass="com.wm.data.ISMemDataImpl">
+              <value name="type">STRING</value>
+              <value name="type_display">String</value>
+              <record name="parameters" javaclass="com.wm.data.ISMemDataImpl">
+                <array name="nameValue" type="record" depth="1">
+                  <record javaclass="com.wm.data.ISMemDataImpl">
+                    <value name="name">charsetName</value>
+                    <value name="value">UTF-8</value>
+                  </record>
+                </array>
+              </record>
+              <value name="charsetName">UTF-8</value>
+            </record>
+            <record name="valueCoder" javaclass="com.wm.data.ISMemDataImpl">
+              <value name="type">JSON</value>
+              <value name="type_display">JSON</value>
+              <record name="parameters" javaclass="com.wm.data.ISMemDataImpl">
+                <array name="nameValue" type="record" depth="1">
+                  <record javaclass="com.wm.data.ISMemDataImpl">
+                    <value name="name">charsetName</value>
+                    <value name="value">UTF-8</value>
+                  </record>
+                  <record javaclass="com.wm.data.ISMemDataImpl">
+                    <value name="name">documentTypeName</value>
+                    <value name="value">sttContactManagement.docTypes.events:ContactUpdate</value>
+                  </record>
+                  <record javaclass="com.wm.data.ISMemDataImpl">
+                    <value name="name">schema</value>
+                    <null name="value"/>
+                  </record>
+                </array>
+              </record>
+              <value name="documentTypeName">sttContactManagement.docTypes.events:ContactUpdate</value>
+              <value name="charsetName">UTF-8</value>
+              <null name="schema"/>
+            </record>
+            <value name="aliasName">sttContactManagement_eem</value>
+          </record>
         </array>
       </record>
     </array>

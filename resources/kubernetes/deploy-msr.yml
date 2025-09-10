@@ -34,11 +34,18 @@ data:
     globalvariable.ES_USERNAME.value=$secret{ES_USERNAME}
     globalvariable.ES_PASSWORD.value=$secret{ES_PASSWORD}
     globalvariable.ES_PASSWORD.isSecure=true
+    globalvariable.EEM_BOOTSTRAP_URL.value=$secret{EEM_BOOTSTRAP_URL}
+    globalvariable.EEM_USERNAME.value=$secret{EEM_USERNAME}
+    globalvariable.EEM_PASSWORD.value=$secret{EEM_PASSWORD}
+    globalvariable.EEM_PASSWORD.isSecure=true
     globalvariable.EVENT_SYSTEM.value=KAFKA
-    globalvariable.sttContactManagement.EVENT_CONNECTION_ALIAS.value=sttContactManagement_es
+    globalvariable.sttContactManagement.EVENT_CONNECTION_ALIAS.value=sttContactManagement_eem
+    globalvariable.sttContactManagement.EVENT_DESTINATION_NAME.value=contact_updates_eem
 
     truststore.ES_TRUSTSTORE.ksLocation=/es/es-cert.p12
     truststore.ES_TRUSTSTORE.ksPassword=$secret{ES_TRUSTSTORE_PASSWORD}
+    truststore.EEM_TRUSTSTORE.ksLocation=/es/eem-cert.jks
+    truststore.EEM_TRUSTSTORE.ksPassword=$secret{EEM_TRUSTSTORE_PASSWORD}
 
     user.Administrator.password=$secret{ADMIN_PASSWORD}
 
