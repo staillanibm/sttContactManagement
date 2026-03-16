@@ -1,0 +1,86 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-init
+  namespace: contact
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 3
+  template:
+    metadata:
+      name: db-init
+    spec:
+      restartPolicy: Never
+      initContainers:
+        # Wait for PostgreSQL to be ready
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_SERVER_NAME}" -U "${DB_USERNAME}" -d "${DB_DATABASE_NAME}" -c '\q'; do
+                echo "Waiting for PostgreSQL to be ready..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready!"
+          env:
+            - name: DB_SERVER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: DB_USERNAME
+                  optional: false
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: DB_PASSWORD
+            - name: DB_DATABASE_NAME
+              value: demo
+      containers:
+        - name: db-init
+          image: postgres:16-alpine
+          command: ["/bin/bash", "/scripts/init-db.sh"]
+          env:
+            - name: DB_SERVER_NAME
+              value: postgres
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: DB_PASSWORD
+            - name: DB_DATABASE_NAME
+              value: demo
+          volumeMounts:
+            - name: init-script
+              mountPath: /scripts
+            - name: sql-script
+              mountPath: /sql
+      volumes:
+        - name: init-script
+          configMap:
+            name: db-init-script
+            defaultMode: 0755
+            items:
+              - key: init-db.sh
+                path: init-db.sh
+        - name: sql-script
+          configMap:
+            name: db-init-script
+            items:
+              - key: contacts.ddl.sql
+                path: contacts.ddl.sql

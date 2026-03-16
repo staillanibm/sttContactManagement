@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: contact
+
+resources:
+  - namespace.yaml
+  - serviceaccount.yaml
+  - msr-configmap.yaml
+  - postgres-pvc.yaml
+  - postgres-deployment.yaml
+  - postgres-service.yaml
+  - db-init-configmap.yaml
+  - db-init-job.yaml
+  - msr-deployment.yaml
+  - msr-service.yaml
+  - msr-route.yaml
+  - msr-hpa.yaml
+  - msr-servicemonitor.yaml

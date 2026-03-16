@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: stt-contact-management
+    app.kubernetes.io/name: microservicesruntime
+  name: stt-contact-management
+  namespace: contact
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stt-contact-management
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: stt-contact-management
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      serviceAccountName: contact-management-sa
+      containers:
+        - image: ghcr.io/staillanibm/msr-contact-management:1.1.12
+          name: msr
+          volumeMounts:
+            - name: application-properties
+              mountPath: /opt/softwareag/IntegrationServer/application.properties
+              subPath:   application.properties
+              readOnly:  true
+            - name: secrets
+              mountPath: /etc/secrets
+            - name: es-truststore
+              mountPath: /es/es-cert.p12
+              subPath: es-cert.p12
+              readOnly: true
+            - name: eem-truststore
+              mountPath: /es/eem-cert.jks
+              subPath: eem-cert.jks
+              readOnly: true
+          readinessProbe:
+            tcpSocket:
+              port: 5555
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 18
+          livenessProbe:
+            tcpSocket:
+              port: 5555
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 300m
+              memory: 500Mi
+            limits:
+              cpu: 1000m
+              memory: 2000Mi
+          env:
+            - name: SERVER
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: SAG_IS_CLOUD_REGISTER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: SAG_IS_CLOUD_REGISTER_URL
+                  name: stt-contact-management
+            - name: SAG_IS_EDGE_CLOUD_ALIAS
+              valueFrom:
+                secretKeyRef:
+                  key: SAG_IS_EDGE_CLOUD_ALIAS
+                  name: stt-contact-management
+            - name: SAG_IS_CLOUD_REGISTER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: SAG_IS_CLOUD_REGISTER_TOKEN
+                  name: stt-contact-management
+            - name: SAG_IS_CLOUD_ALLOW_SYNC
+              value: "false"
+      volumes:
+        - name: application-properties
+          configMap:
+            name: stt-contact-management
+            items:
+            - key:  application.properties
+              path: application.properties
+        - name: secrets
+          secret:
+            secretName: stt-contact-management
+        - name: es-truststore
+          secret:
+            secretName: es-truststore
+            items:
+            - key:  es-cert.p12
+              path: es-cert.p12
+        - name: eem-truststore
+          secret:
+            secretName: eem-truststore
+            items:
+            - key:  eem-cert.jks
+              path: eem-cert.jks

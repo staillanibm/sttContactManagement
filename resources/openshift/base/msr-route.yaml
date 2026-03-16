@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: stt-contact-management
+  namespace: contact
+spec:
+  to:
+    kind: Service
+    name: stt-contact-management
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

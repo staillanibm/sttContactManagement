@@ -13,7 +13,7 @@ kubectl create secret docker-registry wm-regcred \
     --docker-password=${WM_CR_PASSWORD}
 
 # Create the secret to access the image registry where the microservice image is located
-kubectl create secret docker-registry regcred \
+kubectl create secret docker-registry gh-regcred \
     --docker-server=${GH_CR_SERVER} \
     --docker-username=${GH_CR_USERNAME} \
     --docker-password=${GH_CR_PASSWORD}

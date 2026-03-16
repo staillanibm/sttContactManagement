@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stt-contact-management
+  namespace: contact
+data:
+  application.properties: |
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionEnabled=true
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.serverName=$secret{DB_SERVER_NAME}
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.portNumber=$secret{DB_PORT}
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.databaseName=$secret{DB_DATABASE_NAME}
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.user=$secret{DB_USERNAME}
+    artConnection.sttContactManagement.sttContactManagement.connections.postgres_contacts.connectionSettings.password=$secret{DB_PASSWORD}
+
+    settings.watt.net.default.accept=application/json
+    settings.watt.server.ns.lockingMode=none
+
+    globalvariable.SERVER.value=$env{SERVER}
+    globalvariable.ES_BOOTSTRAP_URL.value=$secret{ES_BOOTSTRAP_URL}
+    globalvariable.ES_USERNAME.value=$secret{ES_USERNAME}
+    globalvariable.ES_PASSWORD.value=$secret{ES_PASSWORD}
+    globalvariable.ES_PASSWORD.isSecure=true
+    globalvariable.EEM_BOOTSTRAP_URL.value=$secret{EEM_BOOTSTRAP_URL}
+    globalvariable.EEM_USERNAME.value=$secret{EEM_USERNAME}
+    globalvariable.EEM_PASSWORD.value=$secret{EEM_PASSWORD}
+    globalvariable.EEM_PASSWORD.isSecure=true
+    globalvariable.EVENT_SYSTEM.value=KAFKA
+    globalvariable.sttContactManagement.EVENT_CONNECTION_ALIAS.value=sttContactManagement_eem
+    globalvariable.sttContactManagement.EVENT_DESTINATION_NAME.value=contact_updates_eem
+
+    truststore.ES_TRUSTSTORE.ksLocation=/es/es-cert.p12
+    truststore.ES_TRUSTSTORE.ksPassword=$secret{ES_TRUSTSTORE_PASSWORD}
+    truststore.EEM_TRUSTSTORE.ksLocation=/es/eem-cert.jks
+    truststore.EEM_TRUSTSTORE.ksPassword=$secret{EEM_TRUSTSTORE_PASSWORD}
+
+    user.Administrator.password=$secret{ADMIN_PASSWORD}

@@ -16,7 +16,7 @@ sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule require
 sasl.mechanism=SCRAM-SHA-512
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="${ES_USERNAME}" password="${ES_PASSWORD}" ;
 streaming.client.publish.mode=asynchronous</value>
-        <value name="enabled">true</value>
+        <value name="enabled">false</value>
         <value name="securityProtocol">SASL_SSL</value>
         <value name="truststoreAlias">ES_TRUSTSTORE</value>
         <value name="keystoreAlias"></value>
@@ -78,7 +78,7 @@ sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule require
 sasl.mechanism=PLAIN
 sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="${EEM_USERNAME}" password="${EEM_PASSWORD}" ;
 streaming.client.publish.mode=asynchronous</value>
-        <value name="enabled">true</value>
+        <value name="enabled">false</value>
         <value name="securityProtocol">SASL_SSL</value>
         <value name="truststoreAlias">EEM_TRUSTSTORE</value>
         <value name="keystoreAlias"></value>

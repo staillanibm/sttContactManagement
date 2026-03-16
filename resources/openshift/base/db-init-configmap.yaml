@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-init-script
+  namespace: contact
+data:
+  init-db.sh: |
+    #!/bin/bash
+    set -e
+
+    echo "Checking if contacts table exists..."
+
+    # Check if table exists
+    TABLE_EXISTS=$(PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_SERVER_NAME}" -U "${DB_USERNAME}" -d "${DB_DATABASE_NAME}" -t -c \
+      "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'contacts');")
+
+    if echo "$TABLE_EXISTS" | grep -q "t"; then
+      echo "Table 'contacts' already exists. Skipping DDL execution."
+      exit 0
+    fi
+
+    echo "Table 'contacts' does not exist. Creating table..."
+    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_SERVER_NAME}" -U "${DB_USERNAME}" -d "${DB_DATABASE_NAME}" -f /sql/contacts.ddl.sql
+
+    echo "Table 'contacts' created successfully."
+
+  contacts.ddl.sql: |
+    CREATE TABLE contacts (
+        id VARCHAR(36) PRIMARY KEY,
+        salutation VARCHAR(5),
+        first_name VARCHAR(100) NOT NULL,
+        middle_name VARCHAR(100),
+        last_name VARCHAR(100) NOT NULL,
+        birth_date DATE,
+        email VARCHAR(100),
+        phone_number VARCHAR(20),
+        external_id VARCHAR(20),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );

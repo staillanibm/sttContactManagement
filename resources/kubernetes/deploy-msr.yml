@@ -171,6 +171,7 @@ metadata:
   labels:
     name: stt-contact-management
     app: stt-contact-management
+    monitoring: enabled 
 spec:
   selector:
     app: stt-contact-management
@@ -180,6 +181,28 @@ spec:
   - port: 5555
     targetPort: 5555
     name: http
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: stt-contact-management
+  namespace: contact
+spec:
+  selector:
+    matchLabels:
+      monitoring: enabled 
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s
+      honorLabels: true
+      enableHttp2: false
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_endpoints_label_product]
+          targetLabel: product
 
 ---
 
